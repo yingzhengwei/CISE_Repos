@@ -4,30 +4,29 @@ import { useForm } from "react-hook-form";
 export default function SubmissionForm() {
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = (data: any) => JSON.stringify(data);
+  const onSubmit = async (data: any) => {
+    const response = await fetch("http://localhost:8082/books", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      alert("Book added successfully!");
+    } else {
+      alert("Failed to add book.");
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input {...register("title")} placeholder="Title" />
-      <p>
-        <input {...register("authors")} placeholder="Authors" />
-      </p>
-      <p>
-        <input {...register("source")} placeholder="Source" />
-      </p>
-      <p>
-        <input {...register("pubyear")} placeholder="Publication Year" />
-      </p>
-      <p>
-        <input {...register("doi")} placeholder="DOI" />
-      </p>
-
-      <select {...register("linked_discussion")}>
-        <option value="">Select SE practice...</option>
-        <option value="TDD">TDD</option>
-        <option value="Mob Programming">Mob Programmin</option>
-      </select>
-      <input type="submit" />
+      <input {...register("title")} placeholder="Title" required />
+      <p><input {...register("isbn")} placeholder="ISBN" required /></p>
+      <p><input {...register("author")} placeholder="Author" /></p>
+      <p><input {...register("description")} placeholder="Description" /></p>
+      <p><input type="date" {...register("published_date")} /></p>
+      <p><input {...register("publisher")} placeholder="Publisher" /></p>
+      <input type="submit" value="Add Book" />
     </form>
   );
 }
